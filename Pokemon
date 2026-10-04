@@ -1,0 +1,59 @@
+import random
+class Pokemon:
+    def __init__(self, name, hp, skill):
+        self.name = name
+        self.hp = hp
+        self.max_hp = hp
+        self.skill = skill
+    def show_status(self):
+        print(f"{self.name} hp:{self.hp}/{self.max_hp}")
+    def is_alive(self):
+        return self.hp > 0
+    def attack(self, skill_index, other):
+        skill_name = self.skill[skill_index][0]
+        damage = self.skill[skill_index][1]
+        print(f"\n {self.name} use {skill_name} damage to {other.name}!")
+        other.hp -= damage
+        print(f" {other.name} hp lost {damage}")
+
+class Boss(Pokemon):
+    def __init__(self, name, hp, skill, shield):
+        super().__init__(name,hp,skill)
+        self.shield = shield
+        self.hp += shield
+    def show_status(self):
+        print(f"{self.name} hp:{self.hp}/{self.max_hp} | Shield: {self.shield}")
+
+Arceus_skills = [["Power Blast",80],["Ultimate Force",120],["Trinity Nova", 200]]
+player = Pokemon("Arceus", 450, Arceus_skills)
+
+MewtwoY_skills = [['Aura Sphere',75],['Psy Strike',130],['Psychic Infinity',170]]
+
+Mega_Pika = [["Tiny-bolt",30],["Pika Laser",125],["Topaz Bolt",300]]
+
+enemy = Pokemon("MewtwoY", 380, MewtwoY_skills)
+print(Arceus_skills[0])
+
+print('=====START-BATTLE=====')
+while player.is_alive() and enemy.is_alive():
+    print("\n"+"="*35)
+    player.show_status()
+    enemy.show_status()
+    print("="*35)
+
+    print("Your Turn, Choose your skill" + player.name + ": ")
+    for i in player.skill:
+        print(f"{i[0]} damage {i[1]}")
+    choice = int(input("Choose your skill: "))
+    if 1 > choice > 3:
+        print("Type error, end round instantly")
+    else:
+        player.attack(choice, enemy)
+    if not enemy.is_alive():
+        print(f"{enemy.name} is dead, you WIN!")
+        break
+    bot_choice = random.randint(0, len(enemy.skill)-1)
+    enemy.attack(choice, player)
+    if not player.is_alive():
+        print(f"{player.name} is dead, you LOSE!")
+        break
